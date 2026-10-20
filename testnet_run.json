@@ -1,0 +1,21 @@
+{
+ "payer": "5GCKrs6FAnsSeVd6JJHmPCkFUxcnzQmDkytGcmdAJwcK4sR8",
+ "fund": "0x7ed46672f312f7aaacd43ef3ff9d9829829193c161a7e5cdc54985e22e513047",
+ "split": "0x07aa9f22ef952345267f5900b83532424b6c95c0b4ccc414f5f256fc1192424b",
+ "block": "0x138479a40dbb9e5edb62070821628df53a8ff733a420bdf9ddd6ba69fb2f53b3",
+ "payees": [
+  "5CFYPSHTeSh1tFni86Db6xJUNR5jHFcVqmsUhX3oWmdvcYDJ",
+  "5Ckhfy5nEsRYM1oqWM4nXPCV65yhcm4tbKx31UumoDaPVLm1",
+  "5CZh3cfC95zh32Befb6ndQ8zW9BDpVQJquhwoauYRjk41A3B"
+ ],
+ "shares": [
+  50,
+  30,
+  20
+ ],
+ "balances": {
+  "5CFYPSHTeSh1tFni86Db6xJUNR5jHFcVqmsUhX3oWmdvcYDJ": 5.0,
+  "5Ckhfy5nEsRYM1oqWM4nXPCV65yhcm4tbKx31UumoDaPVLm1": 3.0,
+  "5CZh3cfC95zh32Befb6ndQ8zW9BDpVQJquhwoauYRjk41A3B": 2.0
+ }
+}

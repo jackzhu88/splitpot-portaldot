@@ -1,0 +1,8 @@
+<!doctype html><meta charset=utf-8><title>SplitPot on Portaldot</title>
+<style>body{font-family:sans-serif;max-width:860px;margin:40px auto;padding:0 16px}code{font-size:12px}td{padding:4px 8px;border-bottom:1px solid #ddd}</style>
+<h1>SplitPot — atomic POT payment splitter on Portaldot</h1>
+<p>Splits one payment between several payees by share, in a single atomic <code>utility.batchAll</code> of <code>balances.transfer</code> calls. Either everyone gets paid or nobody does.</p>
+<h2>Testnet run (Portaldot dev node, portaldot_dev 2.0.0)</h2>
+<p>Payer: <code>5GCKrs6FAnsSeVd6JJHmPCkFUxcnzQmDkytGcmdAJwcK4sR8</code><br>Funding tx: <code>0x7ed46672f312f7aaacd43ef3ff9d9829829193c161a7e5cdc54985e22e513047</code><br>Split tx: <code>0x07aa9f22ef952345267f5900b83532424b6c95c0b4ccc414f5f256fc1192424b</code><br>Block: <code>0x138479a40dbb9e5edb62070821628df53a8ff733a420bdf9ddd6ba69fb2f53b3</code></p>
+<table><tr><th>Payee</th><th>Share</th><th>Received (of 10 POT)</th></tr><tr><td><code>5CFYPSHTeSh1tFni86Db6xJUNR5jHFcVqmsUhX3oWmdvcYDJ</code></td><td>50%</td><td>5.0 POT</td></tr><tr><td><code>5Ckhfy5nEsRYM1oqWM4nXPCV65yhcm4tbKx31UumoDaPVLm1</code></td><td>30%</td><td>3.0 POT</td></tr><tr><td><code>5CZh3cfC95zh32Befb6ndQ8zW9BDpVQJquhwoauYRjk41A3B</code></td><td>20%</td><td>2.0 POT</td></tr></table>
+<p>Source: <a href="https://github.com/jackzhu88/splitpot-portaldot">github.com/jackzhu88/splitpot-portaldot</a> · by jackzhu88</p>
