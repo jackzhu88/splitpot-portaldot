@@ -1,21 +1,76 @@
 {
- "payer": "5GCKrs6FAnsSeVd6JJHmPCkFUxcnzQmDkytGcmdAJwcK4sR8",
- "fund": "0x7ed46672f312f7aaacd43ef3ff9d9829829193c161a7e5cdc54985e22e513047",
- "split": "0x07aa9f22ef952345267f5900b83532424b6c95c0b4ccc414f5f256fc1192424b",
- "block": "0x138479a40dbb9e5edb62070821628df53a8ff733a420bdf9ddd6ba69fb2f53b3",
+ "network": "PortaldotV3 Test",
+ "rpc": "wss://test-node-v3.portaldot.dev",
+ "spec": 3002,
+ "status": "ExtrinsicSuccess",
+ "call": "Utility.batch_all([Balances.transfer_keep_alive x 3])",
+ "extrinsic_hash": "0xc13806ef8b6dfd916c33c64c60028e063946f74d0f7e6313d747f897e1b83d88",
+ "extrinsic_index": "182786-1",
+ "block_number": 182786,
+ "block_hash": "0x4dbd14ed8cc6a09eebd71311879efe0d52401f8d457526badda51189b2e6481f",
+ "block_time_utc": "2026-10-25T02:12:12.002Z",
+ "explorer": {
+  "extrinsic": "https://scanner-testnet-v3.portaldot.dev/extrinsics/182786-1",
+  "block": "https://scanner-testnet-v3.portaldot.dev/blocks/182786",
+  "indexer_api": "https://scanner-testnet-v3-api.portaldot.dev/extrinsics/182786-1"
+ },
+ "token": "tPOT",
+ "decimals": 14,
+ "total_split": "6.0",
+ "fee_charged_planck": 2360775504659,
+ "fee_charged": "0.02360775504659",
+ "fee_source": "TransactionPayment.TransactionFeePaid event",
+ "payer": {
+  "address": "5CoM2exPBkAfHQbG2pivUVHQQ9GL6CddpfU7pwwkUximziXx",
+  "before": 50000000000000000,
+  "after": 49397639224495341,
+  "spent": 602360775504659
+ },
  "payees": [
-  "5CFYPSHTeSh1tFni86Db6xJUNR5jHFcVqmsUhX3oWmdvcYDJ",
-  "5Ckhfy5nEsRYM1oqWM4nXPCV65yhcm4tbKx31UumoDaPVLm1",
-  "5CZh3cfC95zh32Befb6ndQ8zW9BDpVQJquhwoauYRjk41A3B"
+  {
+   "address": "5CFYPSHTeSh1tFni86Db6xJUNR5jHFcVqmsUhX3oWmdvcYDJ",
+   "share_pct": 50,
+   "sent": 300000000000000,
+   "before": 0,
+   "after": 300000000000000,
+   "received": 300000000000000
+  },
+  {
+   "address": "5Ckhfy5nEsRYM1oqWM4nXPCV65yhcm4tbKx31UumoDaPVLm1",
+   "share_pct": 30,
+   "sent": 180000000000000,
+   "before": 0,
+   "after": 180000000000000,
+   "received": 180000000000000
+  },
+  {
+   "address": "5CZh3cfC95zh32Befb6ndQ8zW9BDpVQJquhwoauYRjk41A3B",
+   "share_pct": 20,
+   "sent": 120000000000000,
+   "before": 0,
+   "after": 120000000000000,
+   "received": 120000000000000
+  }
  ],
- "shares": [
-  50,
-  30,
-  20
+ "events": [
+  "Balances.Withdraw",
+  "System.NewAccount",
+  "Balances.Endowed",
+  "Balances.Transfer",
+  "Utility.ItemCompleted",
+  "System.NewAccount",
+  "Balances.Endowed",
+  "Balances.Transfer",
+  "Utility.ItemCompleted",
+  "System.NewAccount",
+  "Balances.Endowed",
+  "Balances.Transfer",
+  "Utility.ItemCompleted",
+  "Utility.BatchCompleted",
+  "Balances.Deposit",
+  "TransactionPayment.TransactionFeePaid",
+  "System.ExtrinsicSuccess"
  ],
- "balances": {
-  "5CFYPSHTeSh1tFni86Db6xJUNR5jHFcVqmsUhX3oWmdvcYDJ": 5.0,
-  "5Ckhfy5nEsRYM1oqWM4nXPCV65yhcm4tbKx31UumoDaPVLm1": 3.0,
-  "5CZh3cfC95zh32Befb6ndQ8zW9BDpVQJquhwoauYRjk41A3B": 2.0
- }
+ "note": "Balances are in planck (1 tPOT = 10^14 planck). Payees are the project's fixed demo accounts //SplitPayee0..2 (public Substrate development URIs \u2014 testnet/tPOT self-test only; NEVER use on mainnet).",
+ "finalized": true
 }

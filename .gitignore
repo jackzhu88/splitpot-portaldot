@@ -1,1 +1,35 @@
+# Local key file used by demo_split.py
 key
+
+# Key / wallet / mnemonic shaped files
+*.key
+*.pem
+*.mnemonic
+*.seed
+*keystore*
+*_key.json
+*key*.json
+testnet_*_key.json
+wallet*.json
+*.wallet
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# Secrets directories (anywhere)
+secrets/
+**/secrets/
+
+# Python / local tooling
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Scratch / inspect (never ship)
+_vid_inspect/
+*.log
+.DS_Store

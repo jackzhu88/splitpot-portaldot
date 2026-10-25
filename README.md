@@ -6,13 +6,30 @@ One payer sends a total amount, and it is split by percentage shares across N pa
 
 ## Run
 ```bash
-wget https://github.com/portaldotVolunteer/Portaldot-node/raw/main/portaldot-testnet-ubuntu.tar.gz
-tar xzf portaldot-testnet-ubuntu.tar.gz && cd portaldot-testnet-ubuntu
-./portaldot_dev --dev --alice --rpc-cors all
 pip install substrate-interface
-python split.py     # creates a throwaway key, funds it from //Alice, then splits 10 POT 50/30/20
+# payer key: a JSON file with a "mnemonic" field, kept outside the repo
+KEY_FILE=/path/to/key.json python split.py 6 testnet_run.json   # split 6 tPOT 50/30/20 on the public V3 testnet
 ```
-The results of a real run are in `testnet_run.json`, and there is a demo page in `index.html`. Note: the node uses the legacy `LookupSource` type, so connect with `type_registry_preset="substrate-node-template"`.
+`split.py` targets the public PortaldotV3 testnet by default (`RPC=wss://test-node-v3.portaldot.dev`); set `RPC=` to point it at another Portaldot node. It records the fee from the `TransactionPayment.TransactionFeePaid` event and only reports success on `System.ExtrinsicSuccess`. There is a demo page in `index.html`.
+
+## Public testnet run (PortaldotV3)
+A real split on the public PortaldotV3 testnet (spec 3002), signed by our own test account with test tokens (tPOT) only. Full record: [`testnet_run.json`](testnet_run.json).
+
+| Field | Value |
+|---|---|
+| Extrinsic | [`0xc13806ef8b6dfd916c33c64c60028e063946f74d0f7e6313d747f897e1b83d88`](https://scanner-testnet-v3.portaldot.dev/extrinsics/182786-1) (`182786-1`) |
+| Block | [#182786](https://scanner-testnet-v3.portaldot.dev/blocks/182786), `0x4dbd14ed…6481f`, finalized |
+| Time (UTC) | 2026-10-25T02:12:12Z |
+| Call | `utility.batchAll([balances.transferKeepAlive x 3])` |
+| Split | 6 tPOT, 50/30/20 → 3 / 1.8 / 1.2 tPOT |
+| Fee charged | **0.02360775504659 tPOT** (2,360,775,504,659 planck, from the `TransactionFeePaid` event) |
+| Payer | `5CoM2exPBkAfHQbG2pivUVHQQ9GL6CddpfU7pwwkUximziXx`: 500 → 493.97639224495341 tPOT (6 split + fee) |
+
+The payees are the project's fixed demo accounts (`//SplitPayee0..2`), each new on this network: `5CFYPSHT…cYDJ` received 3 tPOT, `5Ckhfy5n…VLm1` received 1.8 tPOT, `5CZh3cfC…1A3B` received 1.2 tPOT.
+
+> **Mainnet ban:** `//SplitPayee0..2` are public Substrate development URIs. They are fine for tPOT self-tests on testnet only. **Never use them (or any other public Substrate //dev URI) as payees or signers on mainnet.** See [`COMPLIANCE.md`](COMPLIANCE.md).
+
+Earlier, before public testnet tokens were available, the same flow ran on the official local dev node (`portaldot_dev --dev`): split tx `0x07aa9f22…424b`. That was not a public network.
 
 Author: jackzhu88
 
@@ -29,20 +46,17 @@ flowchart LR
 ```
 
 ## Network / deployment status
-- Portaldot exposes a public **mainnet** RPC (`wss://mainnet.portaldot.io`, chain "Portaldot Mainnet", SS58 42, POT 14 decimals) and the explorer `portalscan.portaldot.io`.
-- The official docs list no public testnet RPC and no faucet. The documented "testnet" is the local dev node (`portaldot_dev --dev`) shipped in `portaldot-testnet-ubuntu.tar.gz`.
-- `testnet_run.json` is a real run on that official dev/testnet node: the fund tx is `0x7ed46672…3047`, and the atomic split tx is `0x07aa9f22…424b`, in block `0x138479a4…53b3`.
-- `split.py` already accepts `RPC=wss://…`, so the same script runs unchanged against any public Portaldot endpoint once a funded account is available.
+- **Public testnet:** PortaldotV3 Test, RPC `wss://test-node-v3.portaldot.dev`, explorer [scanner-testnet-v3.portaldot.dev](https://scanner-testnet-v3.portaldot.dev), token tPOT (14 decimals, SS58 42). SplitPot has run there; see above.
+- **Mainnet:** `wss://mainnet.portaldot.io`, explorer `portalscan.portaldot.io`. Not used. Mainnet must never use `//SplitPayee0..2` public Substrate development URIs (see COMPLIANCE.md).
 
 ## Progress report (check-in)
 **Done**
 - Atomic N-way percentage splitter using native pallets (`utility.batchAll` + `balances.transfer`).
 - Python CLI (`split.py`), demo script (`demo.sh`), and a static demo page (`index.html`).
-- End-to-end run on the official Portaldot dev/testnet node, with tx hashes in `testnet_run.json`.
-- Demo video (`splitpot_demo.mp4`), pitch deck (`splitpot_deck.pdf`), and architecture diagram.
+- End-to-end run on the public PortaldotV3 testnet, with the extrinsic hash, explorer link and fee in `testnet_run.json` (earlier also on the local dev node).
+- Demo video (`splitpot_demo.mp4`, includes public V3 explorer proof), pitch deck (`splitpot_deck.pdf`), and architecture diagram.
 
 **Outstanding (before Nov 6 code freeze)**
-- A run on a public Portaldot network with explorer links. This is blocked on obtaining POT: there is no public faucet.
 - A browser UI that signs with a wallet extension (polkadot.js) instead of a CLI key.
-- Input validation and rounding-dust handling, shares that don't sum to 100, and fee estimation display.
+- Input validation, shares that don't sum to 100, and fee estimation display.
 - Optional: an ink!/EVM contract version with reusable split groups.

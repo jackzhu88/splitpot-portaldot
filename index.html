@@ -1,8 +1,38 @@
 <!doctype html><meta charset=utf-8><title>SplitPot on Portaldot</title>
-<style>body{font-family:sans-serif;max-width:860px;margin:40px auto;padding:0 16px}code{font-size:12px}td{padding:4px 8px;border-bottom:1px solid #ddd}</style>
+<style>
+body{font-family:sans-serif;max-width:900px;margin:40px auto;padding:0 16px;line-height:1.45}
+code,pre{font-size:12px} td{padding:4px 8px;border-bottom:1px solid #ddd}
+.note{background:#f6f6f6;padding:10px 12px;border-left:3px solid #888;margin:12px 0}
+.ok{border-left-color:#2a7} .warn{border-left-color:#c80}
+a{color:#06c}
+</style>
 <h1>SplitPot — atomic POT payment splitter on Portaldot</h1>
-<p>Splits one payment between several payees by share, in a single atomic <code>utility.batchAll</code> of <code>balances.transfer</code> calls. Either everyone gets paid or nobody does.</p>
-<h2>Testnet run (Portaldot dev node, portaldot_dev 2.0.0)</h2>
-<p>Payer: <code>5GCKrs6FAnsSeVd6JJHmPCkFUxcnzQmDkytGcmdAJwcK4sR8</code><br>Funding tx: <code>0x7ed46672f312f7aaacd43ef3ff9d9829829193c161a7e5cdc54985e22e513047</code><br>Split tx: <code>0x07aa9f22ef952345267f5900b83532424b6c95c0b4ccc414f5f256fc1192424b</code><br>Block: <code>0x138479a40dbb9e5edb62070821628df53a8ff733a420bdf9ddd6ba69fb2f53b3</code></p>
-<table><tr><th>Payee</th><th>Share</th><th>Received (of 10 POT)</th></tr><tr><td><code>5CFYPSHTeSh1tFni86Db6xJUNR5jHFcVqmsUhX3oWmdvcYDJ</code></td><td>50%</td><td>5.0 POT</td></tr><tr><td><code>5Ckhfy5nEsRYM1oqWM4nXPCV65yhcm4tbKx31UumoDaPVLm1</code></td><td>30%</td><td>3.0 POT</td></tr><tr><td><code>5CZh3cfC95zh32Befb6ndQ8zW9BDpVQJquhwoauYRjk41A3B</code></td><td>20%</td><td>2.0 POT</td></tr></table>
+<p>Splits one payment between several payees by share, in a single atomic <code>utility.batchAll</code> of <code>balances.transfer</code> / <code>transferKeepAlive</code> calls. Either everyone gets paid or nobody does.</p>
+
+<h2>Public testnet run (PortaldotV3)</h2>
+<div class="note ok">
+  <strong>Extrinsic:</strong>
+  <a href="https://scanner-testnet-v3.portaldot.dev/extrinsics/182786-1"><code>0xc13806ef8b6dfd916c33c64c60028e063946f74d0f7e6313d747f897e1b83d88</code></a>
+  (<code>182786-1</code>)<br>
+  <strong>Block:</strong> <a href="https://scanner-testnet-v3.portaldot.dev/blocks/182786">#182786</a> ·
+  <strong>Fee:</strong> 0.02360775504659 tPOT ·
+  <strong>Split:</strong> 6 tPOT, 50/30/20 → 3 / 1.8 / 1.2 tPOT<br>
+  <strong>Time (UTC):</strong> 2026-10-25T02:12:12Z · Full record in <code>testnet_run.json</code>
+</div>
+<table>
+<tr><th>Payee</th><th>Share</th><th>Received</th></tr>
+<tr><td><code>5CFYPSHTeSh1tFni86Db6xJUNR5jHFcVqmsUhX3oWmdvcYDJ</code></td><td>50%</td><td>3.0 tPOT</td></tr>
+<tr><td><code>5Ckhfy5nEsRYM1oqWM4nXPCV65yhcm4tbKx31UumoDaPVLm1</code></td><td>30%</td><td>1.8 tPOT</td></tr>
+<tr><td><code>5CZh3cfC95zh32Befb6ndQ8zW9BDpVQJquhwoauYRjk41A3B</code></td><td>20%</td><td>1.2 tPOT</td></tr>
+</table>
+
+<h2>Earlier local / dev runs (not public testnet)</h2>
+<div class="note warn">
+  These hashes are from the official local <code>portaldot_dev --dev</code> node only. They are <strong>not</strong> public-network proofs.
+  <ul>
+    <li>Split tx <code>0x07aa9f22ef952345267f5900b83532424b6c95c0b4ccc414f5f256fc1192424b</code> (local/dev)</li>
+    <li>Funding tx <code>0x7ed46672f312f7aaacd43ef3ff9d9829829193c161a7e5cdc54985e22e513047</code> (local/dev)</li>
+  </ul>
+</div>
+
 <p>Source: <a href="https://github.com/jackzhu88/splitpot-portaldot">github.com/jackzhu88/splitpot-portaldot</a> · by jackzhu88</p>
