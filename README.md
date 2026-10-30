@@ -4,7 +4,7 @@ Atomic payment splitter for the Portaldot Network (Ecosystem DApps track, Portal
 
 One payer sends a total amount, and it is split by percentage shares across N payees in a single `utility.batchAll` extrinsic. If any transfer fails, the whole batch reverts. It uses native Portaldot pallets (`balances`, `utility`), and fees are paid in POT (14 decimals).
 
-## For judges: 60-second check
+## For judges: 2-minute check
 - **Proof on a public network:** [extrinsic `182786-1`](https://scanner-testnet-v3.portaldot.dev/extrinsics/182786-1) on PortaldotV3 testnet: one `utility.batchAll`, 3 transfers (3 / 1.8 / 1.2 tPOT), fee **0.02360775504659 tPOT**. Raw record: [`testnet_run.json`](testnet_run.json).
 - **Why it matters:** group payouts (bounties, shared bills, revenue shares) in one atomic transaction. No partial payouts, one fee, and no custom contract needed.
 - **Try it without a key:** `DRY_RUN=1 python split.py 6` prints the planned amounts and a live fee estimate from the testnet, without signing anything.
