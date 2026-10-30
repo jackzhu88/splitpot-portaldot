@@ -6,32 +6,53 @@ the repo. Nothing secret is printed or written to the output file.
 
   KEY_FILE=/path/to/key.json python split.py [TOTAL] [OUT]
   e.g. KEY_FILE=... python split.py 6 testnet_run.json   # split 6 tPOT 50/30/20
+
+Options (env): SHARES=50,30,20 (positive ints summing to 100, one per payee);
+DRY_RUN=1 validates inputs and prints the planned amounts and estimated fee
+without signing or submitting anything (no KEY_FILE needed).
 """
 import os, sys, json, datetime
+from splitmath import parse_shares, to_planck, split_amounts
 from substrateinterface import SubstrateInterface, Keypair
 
 RPC = os.environ.get("RPC", "wss://test-node-v3.portaldot.dev")
 EXPLORER = os.environ.get("EXPLORER", "https://scanner-testnet-v3.portaldot.dev")
 TOTAL = sys.argv[1] if len(sys.argv) > 1 else "6"
 OUT = sys.argv[2] if len(sys.argv) > 2 else "testnet_run.json"
-SHARES = [50, 30, 20]
+DRY_RUN = os.environ.get("DRY_RUN") == "1"
+try:  # validate before touching the network or the key
+    SHARES = parse_shares(os.environ.get("SHARES", "50,30,20"))
+    to_planck(TOTAL, 14)
+except ValueError as e:
+    sys.exit(f"invalid input: {e}")
 
 s = SubstrateInterface(url=RPC, ss58_format=42)
 dec = int(s.properties.get("tokenDecimals", 14)); D = 10 ** dec
 sym = s.properties.get("tokenSymbol", "POT")
 utc = lambda ms: datetime.datetime.fromtimestamp(ms / 1000, datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
-me = Keypair.create_from_mnemonic(json.load(open(os.environ["KEY_FILE"]))["mnemonic"].strip(), ss58_format=42)
 payees = [Keypair.create_from_uri(f"//SplitPayee{i}", ss58_format=42).ss58_address for i in range(len(SHARES))]
-total = int(float(TOTAL) * D)
-amounts = [total * sh // 100 for sh in SHARES]
-amounts[-1] += total - sum(amounts)  # rounding dust goes to the last payee
+total = to_planck(TOTAL, dec)
+amounts = split_amounts(total, SHARES)  # rounding dust goes to the last payee
 free = lambda a: s.query("System", "Account", [a]).value["data"]["free"]
 
 # legacy runtimes call it "transfer"; current Substrate runtimes use transfer_keep_alive
 fn = "transfer_keep_alive" if s.get_metadata_call_function("Balances", "transfer_keep_alive") else "transfer"
 calls = [s.compose_call("Balances", fn, {"dest": p, "value": a}) for p, a in zip(payees, amounts)]
 call = s.compose_call("Utility", "batch_all", {"calls": calls})
+
+if DRY_RUN:
+    print(f"DRY RUN on {s.chain}: split {TOTAL} {sym} as {'/'.join(map(str, SHARES))}")
+    for p, sh, a in zip(payees, SHARES, amounts):
+        print(f"  {p}  {sh:>3}%  {a / D} {sym}")
+    try:
+        est = s.get_payment_info(call, Keypair.create_from_uri("//SplitDryRun", ss58_format=42))["partialFee"]
+        print(f"  estimated fee: {est / D} {sym} (paid by the payer, on top of the split)")
+    except Exception as e:
+        print(f"  fee estimate unavailable: {e}")
+    sys.exit(0)
+
+me = Keypair.create_from_mnemonic(json.load(open(os.environ["KEY_FILE"]))["mnemonic"].strip(), ss58_format=42)
 
 before = {a: free(a) for a in [me.ss58_address] + payees}
 print(f"chain {s.chain}  payer {me.ss58_address}  splitting {TOTAL} {sym} {'/'.join(map(str, SHARES))}")
