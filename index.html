@@ -3,7 +3,7 @@
 body{font-family:sans-serif;max-width:900px;margin:40px auto;padding:0 16px;line-height:1.45}
 code,pre{font-size:12px} td{padding:4px 8px;border-bottom:1px solid #ddd}
 .note{background:#f6f6f6;padding:10px 12px;border-left:3px solid #888;margin:12px 0}
-.ok{border-left-color:#2a7} .warn{border-left-color:#c80}
+.ok{border-left-color:#2a7} .err{color:#b00;font-weight:bold} input{font-size:14px;padding:3px 6px} .verify li{margin:3px 0} .warn{border-left-color:#c80}
 a{color:#06c}
 </style>
 <h1>SplitPot — atomic POT payment splitter on Portaldot</h1>
@@ -25,6 +25,31 @@ a{color:#06c}
 <tr><td><code>5Ckhfy5nEsRYM1oqWM4nXPCV65yhcm4tbKx31UumoDaPVLm1</code></td><td>30%</td><td>1.8 tPOT</td></tr>
 <tr><td><code>5CZh3cfC95zh32Befb6ndQ8zW9BDpVQJquhwoauYRjk41A3B</code></td><td>20%</td><td>1.2 tPOT</td></tr>
 </table>
+
+<h2>Verify the proof in 30 seconds</h2>
+<ol class="verify">
+  <li>Open the <a href="https://scanner-testnet-v3.portaldot.dev/extrinsics/182786-1">extrinsic on the PortaldotV3 explorer</a>: it is one <code>utility.batchAll</code> with 3 transfers, result <em>success</em>.</li>
+  <li>Check the fee event (<code>TransactionFeePaid</code>) equals 0.02360775504659 tPOT.</li>
+  <li>Check the three payees received 3 / 1.8 / 1.2 tPOT in the same block (#182786).</li>
+</ol>
+
+<h2>Try the split math</h2>
+<p>Same rules as <code>split.py</code> / <code>splitmath.py</code>: shares are positive integers summing to 100, and rounding dust goes to the last payee so nothing is lost. This calculator only computes; it does not sign or send anything. To get a live fee estimate without signing, run <code>DRY_RUN=1 python split.py 6</code>.</p>
+<p>Total (tPOT) <input id="t" value="6" size="8"> &nbsp; Shares (%) <input id="s" value="50,30,20" size="14"></p>
+<div id="out"></div>
+<script>
+const D=14n;
+function planck(x){if(!/^\d+(\.\d+)?$/.test(x))throw "amount must be a positive number";const[i,f=""]=x.split(".");if(f.length>14)throw "more than 14 decimals";const v=BigInt(i+f.padEnd(14,"0"));if(v<=0n)throw "amount must be > 0";return v}
+function fmt(v){const s=v.toString().padStart(15,"0");return (s.slice(0,-14)+"."+s.slice(-14)).replace(/\.?0+$/,"")}
+function run(){const o=document.getElementById("out");try{
+  const sh=document.getElementById("s").value.split(",").filter(x=>x.trim()).map(x=>{if(!/^\s*\d+\s*$/.test(x))throw "shares must be integers";return parseInt(x)});
+  if(sh.length<2)throw "need at least 2 payees"; if(sh.some(x=>x<=0))throw "every share must be > 0";
+  const sum=sh.reduce((a,b)=>a+b,0); if(sum!==100)throw "shares must sum to 100 (now "+sum+")";
+  const t=planck(document.getElementById("t").value.trim()); const a=sh.map(x=>t*BigInt(x)/100n); a[a.length-1]+=t-a.reduce((x,y)=>x+y,0n);
+  o.innerHTML="<table><tr><th>Payee</th><th>Share</th><th>Receives</th></tr>"+a.map((v,i)=>"<tr><td>Payee "+(i+1)+"</td><td>"+sh[i]+"%</td><td>"+fmt(v)+" tPOT</td></tr>").join("")+"</table><p>All transfers go in one atomic <code>utility.batchAll</code>: all succeed or none do. Fee is paid by the payer on top (about 0.0236 tPOT for 3 payees on PortaldotV3).</p>";
+}catch(e){o.innerHTML='<p class="err">Invalid input: '+e+"</p>"}}
+document.getElementById("t").oninput=run;document.getElementById("s").oninput=run;run();
+</script>
 
 <h2>Earlier local / dev runs (not public testnet)</h2>
 <div class="note warn">
