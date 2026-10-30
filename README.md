@@ -69,7 +69,7 @@ flowchart LR
 - End-to-end run on the public PortaldotV3 testnet, with the extrinsic hash, explorer link and fee in `testnet_run.json` (earlier also on the local dev node).
 - Demo video (`splitpot_demo.mp4`, includes public V3 explorer proof), pitch deck (`splitpot_deck.pdf`), and architecture diagram.
 - Input validation (shares sum to 100, exact decimal amounts), `DRY_RUN` fee estimate, and unit tests for the split math.
-- Demo page with a 30-second proof checklist and a split calculator.
+- Demo page with a 2-minute proof checklist and a split calculator.
 
 **Outstanding (before Nov 6 code freeze)**
 - A browser UI that signs with a wallet extension (polkadot.js) instead of a CLI key.
