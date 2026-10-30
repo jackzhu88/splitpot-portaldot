@@ -4,6 +4,12 @@ Atomic payment splitter for the Portaldot Network (Ecosystem DApps track, Portal
 
 One payer sends a total amount, and it is split by percentage shares across N payees in a single `utility.batchAll` extrinsic. If any transfer fails, the whole batch reverts. It uses native Portaldot pallets (`balances`, `utility`), and fees are paid in POT (14 decimals).
 
+## For judges: 60-second check
+- **Proof on a public network:** [extrinsic `182786-1`](https://scanner-testnet-v3.portaldot.dev/extrinsics/182786-1) on PortaldotV3 testnet: one `utility.batchAll`, 3 transfers (3 / 1.8 / 1.2 tPOT), fee **0.02360775504659 tPOT**. Raw record: [`testnet_run.json`](testnet_run.json).
+- **Why it matters:** group payouts (bounties, shared bills, revenue shares) in one atomic transaction. No partial payouts, one fee, and no custom contract needed.
+- **Try it without a key:** `DRY_RUN=1 python split.py 6` prints the planned amounts and a live fee estimate from the testnet, without signing anything.
+- **Demo:** `index.html` (proof + split calculator), `splitpot_demo.mp4`, `splitpot_deck.pdf`.
+
 ## Run
 ```bash
 pip install substrate-interface
@@ -11,6 +17,13 @@ pip install substrate-interface
 KEY_FILE=/path/to/key.json python split.py 6 testnet_run.json   # split 6 tPOT 50/30/20 on the public V3 testnet
 ```
 `split.py` targets the public PortaldotV3 testnet by default (`RPC=wss://test-node-v3.portaldot.dev`); set `RPC=` to point it at another Portaldot node. It records the fee from the `TransactionPayment.TransactionFeePaid` event and only reports success on `System.ExtrinsicSuccess`. There is a demo page in `index.html`.
+
+```bash
+DRY_RUN=1 python split.py 6                  # validate + preview amounts + fee estimate, no key, nothing sent
+SHARES=60,40 DRY_RUN=1 python split.py 2.5   # custom shares (positive integers summing to 100)
+python -m unittest test_splitmath            # split math tests (no network needed)
+```
+Inputs are checked before anything touches the network: shares must be positive integers summing to 100, and amounts are converted to planck with exact decimal math (no float rounding). Any rounding dust goes to the last payee, so the payees always receive exactly the total.
 
 ## Public testnet run (PortaldotV3)
 A real split on the public PortaldotV3 testnet (spec 3002), signed by our own test account with test tokens (tPOT) only. Full record: [`testnet_run.json`](testnet_run.json).
@@ -55,8 +68,9 @@ flowchart LR
 - Python CLI (`split.py`), demo script (`demo.sh`), and a static demo page (`index.html`).
 - End-to-end run on the public PortaldotV3 testnet, with the extrinsic hash, explorer link and fee in `testnet_run.json` (earlier also on the local dev node).
 - Demo video (`splitpot_demo.mp4`, includes public V3 explorer proof), pitch deck (`splitpot_deck.pdf`), and architecture diagram.
+- Input validation (shares sum to 100, exact decimal amounts), `DRY_RUN` fee estimate, and unit tests for the split math.
+- Demo page with a 30-second proof checklist and a split calculator.
 
 **Outstanding (before Nov 6 code freeze)**
 - A browser UI that signs with a wallet extension (polkadot.js) instead of a CLI key.
-- Input validation, shares that don't sum to 100, and fee estimation display.
 - Optional: an ink!/EVM contract version with reusable split groups.
